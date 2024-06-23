@@ -5,13 +5,13 @@ CREATE TABLE PRODUTOS (
 	sabor_bolo INT NOT NULL, -- 1- Tradicional / 2- Chocolate 
 	sabor_recheio INT NOT NULL, -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
 	decoracao_bolo INT NOT NULL, -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
-    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 /*tabela de produtos cadastrados*/
 
 CREATE TABLE FICHA_TECNICA (
     id_ficha SERIAL PRIMARY KEY,
-    id_produto INT NOT NULL REFERENCES PRODUTOS(id),
+    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto),
     nome VARCHAR(100) NOT NULL,
     descricao TEXT,
     manteiga_gramas INT NOT NULL,
@@ -24,13 +24,14 @@ CREATE TABLE FICHA_TECNICA (
     sal_gramas INT NOT NULL,
     cobertura_gramas INT NOT NULL,
     recheio_gramas INT NOT NULL,
-	sabor_bolo INT NOT NULL, -- 1- Tradicional / 2- Chocolate 
-	sabor_recheio INT NOT NULL, -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
-	decoracao_bolo INT NOT NULL, -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
+    sabor_bolo INT NOT NULL, -- 1- Tradicional / 2- Chocolate 
+    sabor_recheio INT NOT NULL, -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
+    decoracao_bolo INT NOT NULL, -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
     tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
     modo_preparo TEXT NOT NULL,
-	custo_unitario DECIMAL(10, 2) NOT NULL,
+    custo_unitario DECIMAL(10, 2) NOT NULL
 );
+
 /*tabela de ficha tecnica*/
 
 CREATE TABLE OP (
@@ -39,22 +40,12 @@ CREATE TABLE OP (
     data_conclusao TIMESTAMP,
     status VARCHAR(50) NOT NULL,
     quantidade_a_produzir INT NOT NULL,
-    id_produto INT NOT NULL REFERENCES PRODUTOS(id),
+    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto),
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 /*tabela de op*/
 
-CREATE TABLE PROCESSOS_PRODUCAO (
-    id_processo SERIAL PRIMARY KEY,
-    descricao_processo TEXT NOT NULL,
-    tempo_padrao INTERVAL NOT NULL,
-    sequencia_operacoes INT NOT NULL,
-    maquinas_equipamentos VARCHAR(100) NOT NULL,
-    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-/*tabela de processo de produção*/
 
 CREATE TABLE SERVICO (
     id_servico SERIAL PRIMARY KEY,

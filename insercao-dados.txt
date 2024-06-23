@@ -9,18 +9,11 @@ VALUES
 INSERT INTO FICHA_TECNICA (id_produto, nome, descricao, manteiga_gramas, trigo_gramas, acucar_gramas, ovos_unidades, leite_ml, fermento_po_gramas, baunilha_ml, sal_gramas, cobertura_gramas, recheio_gramas, sabor_bolo, sabor_recheio, decoracao_bolo, tempo_preparo, modo_preparo, custo_unitario)
 VALUES
 (1, 'Ficha Técnica - Bolo de Aniversário', 'Bolo tradicional com brigadeiro e decoração personalizada', 200, 300, 150, 4, 200, 10, 5, 2, 100, 150, 1, 1, 1, '01:30:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 45 minutos.', 30.00),
-(2, 'Ficha Técnica - Bolo de Casamento', 'Bolo de chocolate com recheio de ninho com nutella e decoração personalizada', 250, 350, 200, 5, 250, 15, 5, 3, 120, 170, 2, 4, 5, '02:00:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 1 hora.', 50.00);
+(2, 'Ficha Técnica - Bolo de Casamento', 'Bolo de chocolate com recheio de ninho com nutella e decoração personalizada', 250, 350, 200, 5, 250, 15, 5, 3, 120, 170, 2, 4, 5, '02:00:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 1 hora.', 50.00),
 (3, 'Ficha Técnica - Bolo Infantil', 'Bolo simples com recheio de brigadeiro e decoração infantil', 150, 200, 100, 3, 150, 8, 3, 1, 80, 120, 1, 2, 2, '01:00:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 30 minutos.', 20.00),
 (4, 'Ficha Técnica - Bolo Temático', 'Bolo decorado conforme tema escolhido com recheio especial', 200, 250, 150, 4, 200, 10, 4, 2, 100, 150, 2, 3, 3, '01:30:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 45 minutos.', 35.00),
 (5, 'Ficha Técnica - Bolo Personalizado', 'Bolo personalizado com recheio e decoração exclusivos', 250, 300, 200, 5, 250, 12, 5, 3, 120, 170, 1, 5, 4, '02:00:00', 'Misture os ingredientes secos, adicione os líquidos e asse por 1 hora.', 45.00);
 
-INSERT INTO PROCESSOS_PRODUCAO (descricao_processo, tempo_padrao, sequencia_operacoes, maquinas_equipamentos)
-VALUES
-('Preparação da massa', '00:30:00', 1, 'Batedeira'),
-('Assar bolo', '01:00:00', 2, 'Forno'),
-('Preparar recheio', '00:20:00', 3, 'Fogão'),
-('Montar bolo', '00:40:00', 4, 'Mesa de montagem'),
-('Decorar bolo', '00:30:00', 5, 'Mesa de decoração');
 
 INSERT INTO SERVICO (funcao, horas_trabalhadas, custo_servico)
 VALUES
@@ -37,10 +30,3 @@ VALUES
 (400.00, 180.00, 130.00, 60.00),
 (600.00, 220.00, 180.00, 80.00),
 (350.00, 170.00, 120.00, 55.00);
-
-select * from produtos p 
-select * from ficha_tecnica ft 
-select * from processos_producao pp 
-select * from servico s 
-select * from custos c 
-

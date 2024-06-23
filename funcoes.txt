@@ -56,25 +56,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-/*3. Função para listar todos os processos de produção de uma ordem de produção
-Esta função retorna todos os processos de produção associados a uma ordem de produção específica.*/
+/*Essa função calcularTempoTotalPreparo calcula o tempo total de preparo para um produto específico (identificado pelo id_produto), 
+ somando os tempos de preparo de cada ingrediente da ficha técnica associada a esse produto.*/
 
-CREATE OR REPLACE FUNCTION listar_processos_producao(op_id INT)
-RETURNS TABLE(
-    descricao_processo TEXT,
-    tempo_padrao INTERVAL,
-    sequencia_operacoes INT,
-    maquinas_equipamentos VARCHAR
-) AS $$
+CREATE FUNCTION calcular_tempo_total_preparo(id_produto INT)
+RETURNS INTERVAL
+AS $$
+DECLARE
+    tempo_total INTERVAL;
 BEGIN
-    RETURN QUERY
-    SELECT
-        p.descricao_processo, p.tempo_padrao, p.sequencia_operacoes, p.maquinas_equipamentos
-    FROM PROCESSOS_PRODUCAO p
-    JOIN OP o ON o.id_op = op_id
-    WHERE o.id_op = op_id
-    ORDER BY p.sequencia_operacoes;
+    SELECT SUM(tempo_preparo) INTO tempo_total
+    FROM FICHA_TECNICA
+    WHERE id_produto = calcularTempoTotalPreparo.id_produto;
+    
+    RETURN tempo_total;
 END;
 $$ LANGUAGE plpgsql;
-
-

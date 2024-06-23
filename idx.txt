@@ -17,11 +17,6 @@ CREATE INDEX idx_status_op ON OP (status);
 CREATE INDEX idx_quantidade_a_produzir_op ON OP (quantidade_a_produzir);
 CREATE INDEX idx_id_produto_op ON OP (id_produto);
 
-CREATE INDEX idx_descricao_processo ON PROCESSOS_PRODUCAO (descricao_processo);
-CREATE INDEX idx_tempo_padrao_processo ON PROCESSOS_PRODUCAO (tempo_padrao);
-CREATE INDEX idx_sequencia_operacoes_processo ON PROCESSOS_PRODUCAO (sequencia_operacoes);
-CREATE INDEX idx_maquinas_equipamentos_processo ON PROCESSOS_PRODUCAO (maquinas_equipamentos);
-
 CREATE INDEX idx_funcao_servico ON SERVICO (funcao);
 CREATE INDEX idx_horas_trabalhadas_servico ON SERVICO (horas_trabalhadas);
 CREATE INDEX idx_custo_servico ON SERVICO (custo_servico);
