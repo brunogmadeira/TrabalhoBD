@@ -1,0 +1,80 @@
+/*1. Função para calcular o custo total de uma ordem de produção
+Esta função calcula o custo total de uma ordem de produção, somando os custos dos materiais, da mão de obra direta e dos custos gerais de fabricação.*/
+
+CREATE OR REPLACE FUNCTION calcular_custo_total_op(op_id INT)
+RETURNS DECIMAL(10, 2) AS $$
+DECLARE
+    custo_materiais DECIMAL(10, 2);
+    custo_mao_de_obra_direta DECIMAL(10, 2);
+    custos_gerais_fabricacao DECIMAL(10, 2);
+    custo_total DECIMAL(10, 2);
+BEGIN
+    SELECT c.custo_materiais, c.custo_mao_de_obra_direta, c.custos_gerais_fabricacao
+    INTO custo_materiais, custo_mao_de_obra_direta, custos_gerais_fabricacao
+    FROM CUSTOS c
+    JOIN OP o ON o.id_op = op_id
+    WHERE o.id_op = op_id;
+
+    custo_total := custo_materiais + custo_mao_de_obra_direta + custos_gerais_fabricacao;
+
+    RETURN custo_total;
+END;
+$$ LANGUAGE plpgsql;
+
+/*2. Função para obter os detalhes de uma ficha técnica baseada no produto
+Esta função retorna os detalhes da ficha técnica de um produto específico.*/
+
+CREATE OR REPLACE FUNCTION obter_ficha_tecnica_produto(produto_id INT)
+RETURNS TABLE(
+    nome VARCHAR,
+    descricao TEXT,
+    manteiga_gramas INT,
+    trigo_gramas INT,
+    acucar_gramas INT,
+    ovos_unidades INT,
+    leite_ml INT,
+    fermento_po_gramas INT,
+    baunilha_ml INT,
+    sal_gramas INT,
+    cobertura_gramas INT,
+    recheio_gramas INT,
+    sabor_bolo INT,
+    sabor_recheio INT,
+    decoracao_bolo INT,
+    tempo_preparo INTERVAL,
+    modo_preparo TEXT,
+    custo_unitario DECIMAL(10, 2)
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        f.nome, f.descricao, f.manteiga_gramas, f.trigo_gramas, f.acucar_gramas, f.ovos_unidades,
+        f.leite_ml, f.fermento_po_gramas, f.baunilha_ml, f.sal_gramas, f.cobertura_gramas, f.recheio_gramas,
+        f.sabor_bolo, f.sabor_recheio, f.decoracao_bolo, f.tempo_preparo, f.modo_preparo, f.custo_unitario
+    FROM FICHA_TECNICA f
+    WHERE f.id_produto = produto_id;
+END;
+$$ LANGUAGE plpgsql;
+
+/*3. Função para listar todos os processos de produção de uma ordem de produção
+Esta função retorna todos os processos de produção associados a uma ordem de produção específica.*/
+
+CREATE OR REPLACE FUNCTION listar_processos_producao(op_id INT)
+RETURNS TABLE(
+    descricao_processo TEXT,
+    tempo_padrao INTERVAL,
+    sequencia_operacoes INT,
+    maquinas_equipamentos VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        p.descricao_processo, p.tempo_padrao, p.sequencia_operacoes, p.maquinas_equipamentos
+    FROM PROCESSOS_PRODUCAO p
+    JOIN OP o ON o.id_op = op_id
+    WHERE o.id_op = op_id
+    ORDER BY p.sequencia_operacoes;
+END;
+$$ LANGUAGE plpgsql;
+
+

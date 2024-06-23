@@ -1,0 +1,34 @@
+CREATE INDEX idx_nome_produto ON PRODUTOS (nome_produto);
+CREATE INDEX idx_codigo_produto ON PRODUTOS (codigo_produto);
+CREATE INDEX idx_sabor_bolo ON PRODUTOS (sabor_bolo);
+CREATE INDEX idx_sabor_recheio ON PRODUTOS (sabor_recheio);
+CREATE INDEX idx_decoracao_bolo ON PRODUTOS (decoracao_bolo);
+
+CREATE INDEX idx_id_produto_ficha ON FICHA_TECNICA (id_produto);
+CREATE INDEX idx_nome_ficha ON FICHA_TECNICA (nome);
+CREATE INDEX idx_sabor_bolo_ficha ON FICHA_TECNICA (sabor_bolo);
+CREATE INDEX idx_sabor_recheio_ficha ON FICHA_TECNICA (sabor_recheio);
+CREATE INDEX idx_decoracao_bolo_ficha ON FICHA_TECNICA (decoracao_bolo);
+CREATE INDEX idx_tempo_preparo_ficha ON FICHA_TECNICA (tempo_preparo);
+
+CREATE INDEX idx_data_inicio_op ON OP (data_inicio);
+CREATE INDEX idx_data_conclusao_op ON OP (data_conclusao);
+CREATE INDEX idx_status_op ON OP (status);
+CREATE INDEX idx_quantidade_a_produzir_op ON OP (quantidade_a_produzir);
+CREATE INDEX idx_id_produto_op ON OP (id_produto);
+
+CREATE INDEX idx_descricao_processo ON PROCESSOS_PRODUCAO (descricao_processo);
+CREATE INDEX idx_tempo_padrao_processo ON PROCESSOS_PRODUCAO (tempo_padrao);
+CREATE INDEX idx_sequencia_operacoes_processo ON PROCESSOS_PRODUCAO (sequencia_operacoes);
+CREATE INDEX idx_maquinas_equipamentos_processo ON PROCESSOS_PRODUCAO (maquinas_equipamentos);
+
+CREATE INDEX idx_funcao_servico ON SERVICO (funcao);
+CREATE INDEX idx_horas_trabalhadas_servico ON SERVICO (horas_trabalhadas);
+CREATE INDEX idx_custo_servico ON SERVICO (custo_servico);
+
+CREATE INDEX idx_custo_materiais ON CUSTOS (custo_materiais);
+CREATE INDEX idx_custo_mao_de_obra_direta ON CUSTOS (custo_mao_de_obra_direta);
+CREATE INDEX idx_custos_gerais_fabricacao ON CUSTOS (custos_gerais_fabricacao);
+CREATE INDEX idx_despesas_gerais_administrativas ON CUSTOS (despesas_gerais_administrativas);
+
+
