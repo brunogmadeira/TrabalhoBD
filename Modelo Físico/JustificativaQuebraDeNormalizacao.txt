@@ -1,7 +1,21 @@
 #Justificativa para quebra de normalização
 
-todas as tabelas foram normalizadas para evitar redundâncias e dependências não triviais, 
-garantindo a integridade dos dados. A única potencial quebra de normalização poderia ser na tabela OP, 
-onde status é armazenado diretamente em vez de uma tabela de status separada. Isso foi feito para simplificar 
-as consultas e atualizações, uma vez que os valores possíveis de status são poucos e bem definidos, reduzindo 
-a complexidade sem comprometer a integridade dos dados.
+# Tabela "FICHA_TECNICA"
+A tabela FICHA_TECNICA contém referências para as tabelas massas, recheios e decoracoes através das colunas id_massa, id_recheio e id_decoracao, respectivamente. A quebra de normalização aqui ocorre pela inclusão da coluna servicos_utilizados, que é uma lista de serviços representada como uma string. Esta coluna não segue as regras da normalização estrita porque deveria estar em uma tabela separada que permita uma relação muitos-para-muitos entre FICHA_TECNICA e SERVICO.
+
+Justificativa: A escolha de armazenar servicos_utilizados como uma string foi feita para simplificar o modelo de dados e as consultas associadas, evitando a necessidade de criar e gerenciar uma tabela intermediária adicional. Dada a frequência relativamente baixa de atualizações nos serviços e o foco em operações de leitura, a decisão foi tomada para otimizar a eficiência do desenvolvimento e a manutenção do sistema.
+
+# Tabela "PRODUTOS"
+A tabela PRODUTOS contém uma referência à tabela FICHA_TECNICA através da coluna id_ficha. No entanto, outras informações como descricao e nome_produto são armazenadas diretamente na tabela PRODUTOS.
+
+Justificativa: A duplicação de informações como descricao e nome_produto permite uma recuperação mais rápida de dados do produto, evitando joins complexos e melhorando o desempenho de consultas frequentes. Este design é particularmente útil em cenários onde a tabela de produtos é consultada frequentemente para exibição de informações.
+
+# Tabela "OP"
+A tabela OP contém referências à tabela PRODUTOS através da coluna id_produto, mas também armazena informações como status, quantidade_a_produzir, data_inicio, data_conclusao, valor_final, entre outras. Estas informações poderiam ser normalizadas em tabelas separadas para cada tipo de dado.
+
+Justificativa: Manter essas informações na tabela OP simplifica a gestão de ordens de produção e facilita a consulta e atualização dos dados de uma ordem específica. Este design melhora a eficiência em operações de escrita e leitura, reduzindo a complexidade do modelo e das transações associadas.
+
+# Tabela "SERVICO"
+A tabela SERVICO não está diretamente relacionada a outras tabelas, o que pode ser visto como uma quebra de normalização porque os serviços são referenciados apenas através da coluna servicos_utilizados na tabela FICHA_TECNICA.
+
+Justificativa: A separação da tabela SERVICO permite flexibilidade na definição e na atualização de serviços, sem impactar diretamente a estrutura das outras tabelas. Esta abordagem modular facilita a manutenção e a extensão do sistema de serviços, garantindo uma melhor organização e gestão de dados.
