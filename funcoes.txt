@@ -1,5 +1,3 @@
-/*Para criar uma função que insira os dados na tabela OP, incluindo o cálculo de valor_final a partir da tabela FICHA_TECNICA, conforme relacionado na tabela PRODUTOS, você pode usar o seguinte código SQL:*/
-
 CREATE OR REPLACE FUNCTION inserir_dados_op(
     p_id_produto INT,
     p_status VARCHAR(50),
@@ -33,10 +31,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
-/*2. Função para obter os detalhes de uma ficha técnica baseada no produto
-Esta função retorna os detalhes da ficha técnica de um produto específico.*/
-
 CREATE OR REPLACE FUNCTION obter_ficha_tecnica_produto(produto_id INT)
 RETURNS TABLE(
     nome VARCHAR,
@@ -59,8 +53,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-/*uma função que atualize a coluna status da tabela OP para 'Conclusão atrasada' quando a data_conclusao passar*/
-
 CREATE OR REPLACE FUNCTION atualizar_status_conclusao_atrasada() 
 RETURNS VOID AS $$
 BEGIN
@@ -77,5 +69,39 @@ RETURNS TRIGGER AS $$
 BEGIN
     NEW.data_de_atualizacao = CURRENT_TIMESTAMP;
     RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION obter_detalhes_nova_op(id_op_param INT)
+RETURNS TABLE (
+    id_op INT,
+    id_produto INT,
+    nome_produto VARCHAR(255),
+    descricao_produto TEXT,
+    detalhes_descricao TEXT,
+    detalhes_tempo_preparo INT,
+    quantidade_a_produzir INT,
+    status_op VARCHAR(50),
+    data_inicio DATE,
+    data_conclusao DATE,
+    valor_final NUMERIC
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT op.id_op,
+           op.id_produto,
+           p.nome_produto,
+           p.descricao,
+           ft.descricao AS detalhes_descricao,
+           ft.tempo_preparo AS detalhes_tempo_preparo,
+           op.quantidade_a_produzir,
+           op.status,
+           op.data_inicio,
+           op.data_conclusao,
+           op.valor_final
+    FROM op 
+    JOIN produtos p ON p.id_produto = op.id_produto
+    JOIN ficha_tecnica ft ON p.id_ficha = ft.id_ficha
+    WHERE op.id_op = id_op_param;
 END;
 $$ LANGUAGE plpgsql;

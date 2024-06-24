@@ -1,122 +1,39 @@
-/*Esta view detalhes_ordem_producao faz o seguinte:
+CREATE VIEW op_final AS
+SELECT op.id_op ,
+       op.id_produto,
+       p.nome_produto,
+       p.descricao,  
+       ft.descricao AS detalhes_descricao,
+       ft.tempo_preparo AS detalhes_tempo_preparo,
+       op.quantidade_a_produzir,
+       op.status,
+       op.data_inicio,
+       op.data_conclusao,
+       op.valor_final
+FROM op 
+JOIN produtos p ON p.id_produto = op.id_produto
+JOIN ficha_tecnica ft ON p.id_ficha = ft.id_ficha
+WHERE op.status = 'Em produção'; 
 
-Junta a tabela de ordens de produção (OP) com a tabela de produtos (PRODUTOS), a tabela de ficha técnica (FICHA_TECNICA) e a tabela de custos (CUSTOS).
-Seleciona e exibe os detalhes da ordem de produção, incluindo informações do produto, ficha técnica e custos associados.
-Converte os códigos de sabor de bolo, sabor de recheio e decoração de bolo para descrições legíveis.*/
-
-CREATE OR REPLACE VIEW detalhes_ordem_producao AS
-SELECT
-    o.id_op AS numero_ordem,
-    o.data_inicio,
-    o.data_conclusao,
-    o.status,
-    o.quantidade_a_produzir,
-    p.nome_produto,
-    p.codigo_produto,
-    CASE p.sabor_bolo
-        WHEN 1 THEN 'Tradicional'
-        WHEN 2 THEN 'Chocolate'
-    END AS sabor_bolo,
-    CASE p.sabor_recheio
-        WHEN 1 THEN 'Brigadeiro'
-        WHEN 2 THEN 'Brigadeiro Branco'
-        WHEN 3 THEN 'Dois Amores'
-        WHEN 4 THEN 'Ninho com Nutella'
-        WHEN 5 THEN 'Quatro Leites'
-        WHEN 6 THEN 'Sensação'
-        WHEN 7 THEN 'Cocada'
-        WHEN 8 THEN 'Caramelo Salgado'
-    END AS sabor_recheio,
-    CASE p.decoracao_bolo
-        WHEN 1 THEN 'Bento (frase personalizada)'
-        WHEN 2 THEN 'Desenho animado'
-        WHEN 3 THEN 'Time de futebol'
-        WHEN 4 THEN 'Cor lisa'
-        WHEN 5 THEN 'Mandar referência'
-    END AS decoracao_bolo,
-    f.nome AS nome_ficha,
-    f.descricao AS descricao_ficha,
-    f.manteiga_gramas,
-    f.trigo_gramas,
-    f.acucar_gramas,
-    f.ovos_unidades,
-    f.leite_ml,
-    f.fermento_po_gramas,
-    f.baunilha_ml,
-    f.sal_gramas,
-    f.cobertura_gramas,
-    f.recheio_gramas,
-    f.tempo_preparo,
-    f.modo_preparo,
-    f.custo_unitario,
-    c.custo_materiais,
-    c.custo_mao_de_obra_direta,
-    c.custos_gerais_fabricacao,
-    c.despesas_gerais_administrativas
-FROM OP o
-JOIN PRODUTOS p ON o.id_produto = p.id_produto
-JOIN FICHA_TECNICA f ON p.id_produto = f.id_produto
-JOIN CUSTOS c ON o.id_op = c.id;
-
-/*View: Detalhes de Produtos
-Esta view fornece uma visão consolidada dos detalhes dos produtos, incluindo o nome, código, sabores, decoração e a ficha técnica associada.*/
-
-CREATE OR REPLACE VIEW detalhes_produtos AS
+CREATE VIEW vw_detalhes_produto AS
 SELECT
     p.id_produto,
     p.nome_produto,
-    p.codigo_produto,
-    CASE p.sabor_bolo
-        WHEN 1 THEN 'Tradicional'
-        WHEN 2 THEN 'Chocolate'
-    END AS sabor_bolo,
-    CASE p.sabor_recheio
-        WHEN 1 THEN 'Brigadeiro'
-        WHEN 2 THEN 'Brigadeiro Branco'
-        WHEN 3 THEN 'Dois Amores'
-        WHEN 4 THEN 'Ninho com Nutella'
-        WHEN 5 THEN 'Quatro Leites'
-        WHEN 6 THEN 'Sensação'
-        WHEN 7 THEN 'Cocada'
-        WHEN 8 THEN 'Caramelo Salgado'
-    END AS sabor_recheio,
-    CASE p.decoracao_bolo
-        WHEN 1 THEN 'Bento (frase personalizada)'
-        WHEN 2 THEN 'Desenho animado'
-        WHEN 3 THEN 'Time de futebol'
-        WHEN 4 THEN 'Cor lisa'
-        WHEN 5 THEN 'Mandar referência'
-    END AS decoracao_bolo,
+    p.descricao AS descricao_produto,
+    p.data_de_criacao AS data_criacao_produto,
     f.nome AS nome_ficha,
     f.descricao AS descricao_ficha,
-    f.manteiga_gramas,
-    f.trigo_gramas,
-    f.acucar_gramas,
-    f.ovos_unidades,
-    f.leite_ml,
-    f.fermento_po_gramas,
-    f.baunilha_ml,
-    f.sal_gramas,
-    f.cobertura_gramas,
-    f.recheio_gramas,
-    f.tempo_preparo,
-    f.modo_preparo,
-    f.custo_unitario
-FROM PRODUTOS p
-JOIN FICHA_TECNICA f ON p.id_produto = f.id_produto;
+    f.tempo_preparo AS tempo_preparo_ficha,
+    f.servicos_utilizados AS servicos_ficha,
+    f.custo_total AS custo_ficha
+FROM
+    produtos p
+INNER JOIN
+    ficha_tecnica f ON p.id_ficha = f.id_ficha;
 
-/*View para listar todas as ordens de produção com o status atual:*/
-
-CREATE VIEW vw_ordens_producao AS
-SELECT 
-    op.id_op,
-    op.data_inicio,
-    op.data_conclusao,
-    op.status,
-    op.quantidade_a_produzir,
-    p.nome_produto,
-    p.codigo_produto
-FROM 
-    OP op
-JOIN 
-    PRODUTOS p ON op.id_produto = p.id_produto;
+CREATE VIEW vw_fichas_detalhadas AS
+SELECT ft.nome, ft.descricao AS descricao_ficha, m.descricao AS massa, r.descricao AS recheio, d.descricao AS decoracao
+FROM FICHA_TECNICA ft
+JOIN massas m ON ft.id_massa = m.id_massa
+JOIN recheios r ON ft.id_recheio = r.id_recheio
+JOIN decoracoes d ON ft.id_decoracao = d.id_decoracao;
