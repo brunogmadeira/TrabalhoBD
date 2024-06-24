@@ -59,15 +59,6 @@ CREATE TABLE "SERVICO" (
   "data_de_atualizacao" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
 
-CREATE TABLE "CUSTOS" (
-  "id_custo" SERIAL PRIMARY KEY,
-  "id_op" INT,
-  "custo_materiais" DECIMAL(10,2),
-  "custo_mao_de_obra_direta" DECIMAL(10,2),
-  "custos_gerais_fabricacao" DECIMAL(10,2),
-  "despesas_gerais_administrativas" DECIMAL(10,2)
-);
-
 ALTER TABLE "PRODUTOS" ADD FOREIGN KEY ("id_ficha") REFERENCES "FICHA_TECNICA" ("id_ficha");
 
 ALTER TABLE "FICHA_TECNICA" ADD FOREIGN KEY ("id_massa") REFERENCES "MASSAS" ("id_massa");
