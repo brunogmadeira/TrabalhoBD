@@ -1,11 +1,28 @@
-/*tabela de produtos cadastrados*/
+/*tabela de massas*/
 
-CREATE TABLE PRODUTOS (
-    id_produto SERIAL PRIMARY KEY,
-	id_ficha INT NOT NULL REFERENCES FICHA_TECNICA(id_ficha),
-    nome_produto VARCHAR(100) NOT NULL,
-    descricao text not null,
-    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+create table massas (
+  id_massa SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_massa DECIMAL (10,2) not null
+);
+
+/*tabela de recheios*/
+
+create table recheios (
+  id_recheio SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_recheio DECIMAL (10,2) not null
+);
+
+/*tabela de decoracoes*/
+
+create table decoracoes (
+  id_decoracao SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_decoracao DECIMAL (10,2) not null
 );
 
 /*tabela de ficha tecnica*/
@@ -19,34 +36,17 @@ CREATE TABLE FICHA_TECNICA (
     descricao TEXT,
     tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
     servicos_utilizados VARCHAR(50) NOT NULL,
-    custo_total DECIMAL(10, 2) NOT null,
+    custo_total DECIMAL(10, 2) NOT null
 );
 
-/*tabela de massas*/
+/*tabela de produtos cadastrados*/
 
-create table massas (
-  id_massa SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_massa DECIMAL (10,2) not null,
-);
-
-/*tabela de recheios*/
-
-create table recheios (
-  id_recheio SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_recheio DECIMAL (10,2) not null,
-);
-
-/*tabela de decoracoes*/
-
-create table decoracoes (
-  id_decoracao SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_decoracao DECIMAL (10,2) not null,
+CREATE TABLE PRODUTOS (
+    id_produto SERIAL PRIMARY KEY,
+	id_ficha INT NOT NULL REFERENCES FICHA_TECNICA(id_ficha),
+    nome_produto VARCHAR(100) NOT NULL,
+    descricao text not null,
+    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 /*tabela de op*/
