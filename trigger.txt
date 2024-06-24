@@ -1,5 +1,41 @@
+-- Função da trigger para atualizar a coluna data_de_atualizacao
+CREATE OR REPLACE FUNCTION atualizar_data_atualizacao()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_de_atualizacao = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
 -- Trigger para a tabela OP
 CREATE TRIGGER trigger_atualizar_data_atualizacao
 BEFORE UPDATE ON OP
 FOR EACH ROW
 EXECUTE FUNCTION atualizar_data_atualizacao();
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Função para atualizar o status para 'Conclusão atrasada' onde a data_conclusao já passou e o status ainda não é 'Concluída'
+CREATE OR REPLACE FUNCTION atualizar_status_conclusao_atrasada() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Atualizar o status para 'Conclusão atrasada' onde a data_conclusao já passou e o status ainda não é 'Concluída'
+    IF NEW.data_conclusao < CURRENT_TIMESTAMP AND NEW.status != 'Concluída' THEN
+        NEW.status := 'Conclusão atrasada';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Criar a trigger após a atualização
+CREATE TRIGGER trigger_atualizacao_op
+BEFORE UPDATE ON OP
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_status_conclusao_atrasada();
+
+-- Criar a trigger após a atualização
+CREATE TRIGGER trigger_insercao_op
+BEFORE insert ON OP
+FOR EACH ROW
+EXECUTE FUNCTION atualizar_status_conclusao_atrasada();
+

@@ -58,19 +58,7 @@ END;
 $$ LANGUAGE plpgsql;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION atualizar_status_conclusao_atrasada() 
-RETURNS VOID AS $$
-BEGIN
-    -- Atualizar o status para 'Conclusão atrasada' onde a data_conclusao já passou e o status ainda não é 'Concluído'
-    UPDATE OP
-    SET status = 'Conclusão atrasada'
-    WHERE data_conclusao < CURRENT_TIMESTAMP AND status != 'Concluído';
-END;
-$$ LANGUAGE plpgsql;
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION obter_detalhes_nova_op(id_op_param INT)
+/*CREATE OR REPLACE FUNCTION obter_detalhes_nova_op(id_op_param INT)
 RETURNS TABLE (
     id_op INT,
     id_produto INT,
@@ -102,4 +90,5 @@ BEGIN
     JOIN ficha_tecnica ft ON p.id_ficha = ft.id_ficha
     WHERE op.id_op = id_op_param;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;*/
+
