@@ -1,6 +1,5 @@
 CREATE OR REPLACE FUNCTION inserir_dados_op(
     p_id_produto INT,
-    p_status VARCHAR(50),
     p_quantidade_a_produzir INT,
     p_data_inicio TIMESTAMP
 ) 
@@ -29,11 +28,12 @@ BEGIN
         id_produto, status, quantidade_a_produzir, data_inicio, data_conclusao, valor_final, data_de_criacao, data_de_atualizacao
     )
     VALUES (
-        p_id_produto, p_status, p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_valor_final, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        p_id_produto, 'Em produção', p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_valor_final, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     );
 END;
 $$ LANGUAGE plpgsql;
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION obter_ficha_tecnica_produto(produto_id INT)
 RETURNS TABLE(
@@ -56,6 +56,7 @@ BEGIN
     WHERE p.id_produto = produto_id;
 END;
 $$ LANGUAGE plpgsql;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION atualizar_status_conclusao_atrasada() 
 RETURNS VOID AS $$
@@ -67,14 +68,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-/* Função da trigger para atualizar a coluna data_de_atualizacao*/
-CREATE OR REPLACE FUNCTION atualizar_data_atualizacao()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.data_de_atualizacao = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION obter_detalhes_nova_op(id_op_param INT)
 RETURNS TABLE (
