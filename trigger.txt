@@ -1,39 +1,5 @@
-/*Primeiro, criaremos uma função que será executada pela trigger para calcular o custo total dos ingredientes na ficha técnica:*/
-
-CREATE OR REPLACE FUNCTION calcular_custo_total()
-RETURNS TRIGGER AS $$
-DECLARE
-    custo_total DECIMAL(10, 2);
-BEGIN
-    -- Calcula o custo total somando o custo de todos os ingredientes
-    custo_total := NEW.manteiga_gramas * 0.01
-                + NEW.trigo_gramas * 0.005
-                + NEW.acucar_gramas * 0.008
-                + NEW.ovos_unidades * 0.20
-                + NEW.leite_ml * 0.002
-                + NEW.fermento_po_gramas * 0.03
-                + NEW.baunilha_ml * 0.10
-                + NEW.sal_gramas * 0.01
-                + NEW.cobertura_gramas * 0.05
-                + NEW.recheio_gramas * 0.07;
-    
-    NEW.custo_unitario := custo_total;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_calcular_custo_total
-BEFORE INSERT ON FICHA_TECNICA
+-- Trigger para a tabela OP
+CREATE TRIGGER trigger_atualizar_data_atualizacao
+BEFORE UPDATE ON OP
 FOR EACH ROW
-EXECUTE FUNCTION calcular_custo_total();
-
-/*Função calcular_custo_total:
-
-Define uma função PL/pgSQL que calcula o custo total dos ingredientes na ficha técnica.
-A função utiliza preços fictícios para cada ingrediente. Você pode ajustar esses preços conforme necessário.
-O custo total é armazenado na coluna custo_unitario do novo registro.
-
-Trigger trigger_calcular_custo_total:
-
-Define uma trigger que é acionada antes de uma operação de INSERT na tabela FICHA_TECNICA.
-A trigger executa a função calcular_custo_total para calcular e definir o custo total dos ingredientes.*/
+EXECUTE FUNCTION atualizar_data_atualizacao();

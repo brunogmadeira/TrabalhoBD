@@ -1,25 +1,38 @@
-/*1. Função para calcular o custo total de uma ordem de produção
-Esta função calcula o custo total de uma ordem de produção, somando os custos dos materiais, da mão de obra direta e dos custos gerais de fabricação.*/
+/*Para criar uma função que insira os dados na tabela OP, incluindo o cálculo de valor_final a partir da tabela FICHA_TECNICA, conforme relacionado na tabela PRODUTOS, você pode usar o seguinte código SQL:*/
 
-CREATE OR REPLACE FUNCTION calcular_custo_total_op(op_id INT)
-RETURNS DECIMAL(10, 2) AS $$
+CREATE OR REPLACE FUNCTION inserir_dados_op(
+    p_id_produto INT,
+    p_status VARCHAR(50),
+    p_quantidade_a_produzir INT,
+    p_data_inicio TIMESTAMP
+) 
+RETURNS VOID AS $$
 DECLARE
-    custo_materiais DECIMAL(10, 2);
-    custo_mao_de_obra_direta DECIMAL(10, 2);
-    custos_gerais_fabricacao DECIMAL(10, 2);
-    custo_total DECIMAL(10, 2);
+    v_id_ficha INT;
+    v_custo_total DECIMAL(10,2);
+    v_tempo_preparo INTERVAL;
+    v_data_conclusao TIMESTAMP;
 BEGIN
-    SELECT c.custo_materiais, c.custo_mao_de_obra_direta, c.custos_gerais_fabricacao
-    INTO custo_materiais, custo_mao_de_obra_direta, custos_gerais_fabricacao
-    FROM CUSTOS c
-    JOIN OP o ON o.id_op = op_id
-    WHERE o.id_op = op_id;
-
-    custo_total := custo_materiais + custo_mao_de_obra_direta + custos_gerais_fabricacao;
-
-    RETURN custo_total;
+    -- Obter o id_ficha da tabela PRODUTOS
+    SELECT id_ficha INTO v_id_ficha FROM PRODUTOS WHERE id_produto = p_id_produto;
+    
+    -- Obter o custo_total e tempo_preparo da tabela FICHA_TECNICA
+    SELECT custo_total, tempo_preparo INTO v_custo_total, v_tempo_preparo FROM FICHA_TECNICA WHERE id_ficha = v_id_ficha;
+    
+    -- Calcular a data de conclusão
+    v_data_conclusao := p_data_inicio + INTERVAL '1 day' + (v_tempo_preparo * p_quantidade_a_produzir);
+    
+    -- Inserir os dados na tabela OP
+    INSERT INTO OP (
+        id_produto, status, quantidade_a_produzir, data_inicio, data_conclusao, valor_final, data_de_criacao, data_de_atualizacao
+    )
+    VALUES (
+        p_id_produto, p_status, p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_custo_total, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+    );
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 /*2. Função para obter os detalhes de uma ficha técnica baseada no produto
 Esta função retorna os detalhes da ficha técnica de um produto específico.*/
@@ -28,47 +41,41 @@ CREATE OR REPLACE FUNCTION obter_ficha_tecnica_produto(produto_id INT)
 RETURNS TABLE(
     nome VARCHAR,
     descricao TEXT,
-    manteiga_gramas INT,
-    trigo_gramas INT,
-    acucar_gramas INT,
-    ovos_unidades INT,
-    leite_ml INT,
-    fermento_po_gramas INT,
-    baunilha_ml INT,
-    sal_gramas INT,
-    cobertura_gramas INT,
-    recheio_gramas INT,
-    sabor_bolo INT,
-    sabor_recheio INT,
-    decoracao_bolo INT,
     tempo_preparo INTERVAL,
-    modo_preparo TEXT,
-    custo_unitario DECIMAL(10, 2)
+    servicos_utilizados VARCHAR(50),
+    custo_total DECIMAL(10, 2),
+    id_massa INT,
+    id_recheio INT,
+    id_decoracao INT
 ) AS $$
 BEGIN
     RETURN QUERY
     SELECT
-        f.nome, f.descricao, f.manteiga_gramas, f.trigo_gramas, f.acucar_gramas, f.ovos_unidades,
-        f.leite_ml, f.fermento_po_gramas, f.baunilha_ml, f.sal_gramas, f.cobertura_gramas, f.recheio_gramas,
-        f.sabor_bolo, f.sabor_recheio, f.decoracao_bolo, f.tempo_preparo, f.modo_preparo, f.custo_unitario
+        f.nome, f.descricao, f.tempo_preparo, f.servicos_utilizados, f.custo_total,
+        f.id_massa, f.id_recheio, f.id_decoracao
     FROM FICHA_TECNICA f
-    WHERE f.id_produto = produto_id;
+    JOIN PRODUTOS p ON p.id_ficha = f.id_ficha
+    WHERE p.id_produto = produto_id;
 END;
 $$ LANGUAGE plpgsql;
 
-/*Essa função calcularTempoTotalPreparo calcula o tempo total de preparo para um produto específico (identificado pelo id_produto), 
- somando os tempos de preparo de cada ingrediente da ficha técnica associada a esse produto.*/
+/*uma função que atualize a coluna status da tabela OP para 'Conclusão atrasada' quando a data_conclusao passar*/
 
-CREATE FUNCTION calcular_tempo_total_preparo(id_produto INT)
-RETURNS INTERVAL
-AS $$
-DECLARE
-    tempo_total INTERVAL;
+CREATE OR REPLACE FUNCTION atualizar_status_conclusao_atrasada() 
+RETURNS VOID AS $$
 BEGIN
-    SELECT SUM(tempo_preparo) INTO tempo_total
-    FROM FICHA_TECNICA
-    WHERE id_produto = calcularTempoTotalPreparo.id_produto;
-    
-    RETURN tempo_total;
+    -- Atualizar o status para 'Conclusão atrasada' onde a data_conclusao já passou e o status ainda não é 'Concluído'
+    UPDATE OP
+    SET status = 'Conclusão atrasada'
+    WHERE data_conclusao < CURRENT_TIMESTAMP AND status != 'Concluído';
+END;
+$$ LANGUAGE plpgsql;
+
+/* Função da trigger para atualizar a coluna data_de_atualizacao*/
+CREATE OR REPLACE FUNCTION atualizar_data_atualizacao()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_de_atualizacao = CURRENT_TIMESTAMP;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
