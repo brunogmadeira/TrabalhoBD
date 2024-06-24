@@ -53,11 +53,11 @@ create table decoracoes (
 
 CREATE TABLE OP (
     id_op SERIAL PRIMARY KEY,
-    data_inicio TIMESTAMP NOT NULL,
-    data_conclusao TIMESTAMP,
+    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto), 
     status VARCHAR(50) NOT NULL,
     quantidade_a_produzir INT NOT NULL,
-    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto), 
+    data_inicio TIMESTAMP NOT NULL,
+    data_conclusao TIMESTAMP,
     valor_final DECIMAL(10,2) NOT null,
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
