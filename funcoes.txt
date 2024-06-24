@@ -10,6 +10,7 @@ DECLARE
     v_custo_total DECIMAL(10,2);
     v_tempo_preparo INTERVAL;
     v_data_conclusao TIMESTAMP;
+    v_valor_final DECIMAL(10,2);
 BEGIN
     -- Obter o id_ficha da tabela PRODUTOS
     SELECT id_ficha INTO v_id_ficha FROM PRODUTOS WHERE id_produto = p_id_produto;
@@ -20,12 +21,15 @@ BEGIN
     -- Calcular a data de conclusão
     v_data_conclusao := p_data_inicio + INTERVAL '1 day' + (v_tempo_preparo * p_quantidade_a_produzir);
     
+    -- Calcular o valor final
+    v_valor_final := v_custo_total * p_quantidade_a_produzir;
+    
     -- Inserir os dados na tabela OP
     INSERT INTO OP (
         id_produto, status, quantidade_a_produzir, data_inicio, data_conclusao, valor_final, data_de_criacao, data_de_atualizacao
     )
     VALUES (
-        p_id_produto, p_status, p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_custo_total, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        p_id_produto, p_status, p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_valor_final, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     );
 END;
 $$ LANGUAGE plpgsql;
