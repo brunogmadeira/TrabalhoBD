@@ -1,44 +1,3 @@
-/*tabela de massas*/
-
-create table massas (
-  id_massa SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_massa DECIMAL (10,2) not null
-);
-
-/*tabela de recheios*/
-
-create table recheios (
-  id_recheio SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_recheio DECIMAL (10,2) not null
-);
-
-/*tabela de decoracoes*/
-
-create table decoracoes (
-  id_decoracao SERIAL primary key, 
-  descricao VARCHAR(50) not NULL,
-  ingredientes text not null, 
-  valor_decoracao DECIMAL (10,2) not null
-);
-
-/*tabela de ficha tecnica*/
-
-CREATE TABLE FICHA_TECNICA (
-    id_ficha SERIAL PRIMARY KEY,
-    id_massa INT NOT NULL REFERENCES massas(id_massa), 
-	id_recheio INT NOT NULL REFERENCES recheios(id_recheio),
-	id_decoracao INT NOT NULL REFERENCES decoracoes(id_decoracao),
-    nome VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
-    servicos_utilizados VARCHAR(50) NOT NULL,
-    custo_total DECIMAL(10, 2) NOT null
-);
-
 /*tabela de produtos cadastrados*/
 
 CREATE TABLE PRODUTOS (
@@ -49,6 +8,47 @@ CREATE TABLE PRODUTOS (
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+/*tabela de ficha tecnica*/
+
+CREATE TABLE FICHA_TECNICA (
+    id_ficha SERIAL PRIMARY KEY,
+    id_massa INT NOT NULL REFERENCES massas(id_massa), -- 1- Tradicional / 2- Chocolate 
+	id_recheio INT NOT NULL REFERENCES recheios(id_recheio), -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
+	id_decoracao INT NOT NULL REFERENCES decoracoes(id_decoracao), -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
+    servicos_utilizados VARCHAR(50) NOT NULL,
+    custo_total DECIMAL(10, 2) NOT null,
+);
+
+/*tabela de massas*/
+
+create table massas (
+  id_massa SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_massa DECIMAL (10,2) not null,
+);
+
+/*tabela de recheios*/
+
+create table recheios (
+  id_recheio SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_recheio DECIMAL (10,2) not null,
+);
+
+/*tabela de decoracoes*/
+
+create table decoracoes (
+  id_decoracao SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_decoracao DECIMAL (10,2) not null,
+);
+
 /*tabela de op*/
 
 CREATE TABLE OP (
@@ -57,7 +57,8 @@ CREATE TABLE OP (
     data_conclusao TIMESTAMP,
     status VARCHAR(50) NOT NULL,
     quantidade_a_produzir INT NOT NULL,
-    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto),
+    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto), 
+    valor_final DECIMAL(10,2) NOT NULL;
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -70,4 +71,5 @@ CREATE TABLE SERVICO (
     custo_servico_hora DECIMAL(10, 2) NOT NULL,
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
 );
