@@ -1,7 +1,6 @@
-CREATE OR REPLACE FUNCTION inserir_dados_op(
+CREATE OR REPLACE FUNCTION inserir_dados_opoi(
     p_id_produto INT,
-    p_quantidade_a_produzir INT,
-    p_data_inicio TIMESTAMP
+    p_quantidade_a_produzir INT
 ) 
 RETURNS VOID AS $$
 DECLARE
@@ -12,13 +11,13 @@ DECLARE
     v_valor_final DECIMAL(10,2);
 BEGIN
     -- Obter o id_ficha da tabela PRODUTOS
-    SELECT id_ficha INTO v_id_ficha FROM PRODUTOS WHERE id_produto = p_id_produto;
+    SELECT id_ficha INTO v_id_ficha FROM produtos WHERE id_produto = p_id_produto;
     
     -- Obter o custo_total e tempo_preparo da tabela FICHA_TECNICA
-    SELECT custo_total, tempo_preparo INTO v_custo_total, v_tempo_preparo FROM FICHA_TECNICA WHERE id_ficha = v_id_ficha;
+    SELECT custo_total, tempo_preparo INTO v_custo_total, v_tempo_preparo FROM ficha_tecnica WHERE id_ficha = v_id_ficha;
     
     -- Calcular a data de conclusão
-    v_data_conclusao := p_data_inicio + INTERVAL '1 day' + (v_tempo_preparo * p_quantidade_a_produzir);
+    v_data_conclusao := CURRENT_TIMESTAMP + INTERVAL '1 day' + v_tempo_preparo * p_quantidade_a_produzir;
     
     -- Calcular o valor final
     v_valor_final := v_custo_total * p_quantidade_a_produzir;
@@ -28,7 +27,7 @@ BEGIN
         id_produto, status, quantidade_a_produzir, data_inicio, data_conclusao, valor_final, data_de_criacao, data_de_atualizacao
     )
     VALUES (
-        p_id_produto, 'Em produção', p_quantidade_a_produzir, p_data_inicio, v_data_conclusao, v_valor_final, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        p_id_produto, 'Em produção', p_quantidade_a_produzir, CURRENT_TIMESTAMP, v_data_conclusao, v_valor_final, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
     );
 END;
 $$ LANGUAGE plpgsql;
