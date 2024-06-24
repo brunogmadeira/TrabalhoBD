@@ -1,29 +1,26 @@
+-- Índices para a tabela de massas
+CREATE INDEX idx_descricao_massa ON massas (descricao);
+CREATE INDEX idx_valor_massa ON massas (valor_massa);
+
+-- Índices para a tabela de recheios
+CREATE INDEX idx_descricao_recheio ON recheios (descricao);
+CREATE INDEX idx_valor_recheio ON recheios (valor_recheio);
+
+-- Índices para a tabela de decoracoes
+CREATE INDEX idx_descricao_decoracao ON decoracoes (descricao);
+CREATE INDEX idx_valor_decoracao ON decoracoes (valor_decoracao);
+
+-- Índices para a tabela de ficha técnica
+CREATE INDEX idx_nome_ficha_tecnica ON FICHA_TECNICA (nome);
+CREATE INDEX idx_custo_total ON FICHA_TECNICA (custo_total);
+
+-- Índices para a tabela de produtos cadastrados
 CREATE INDEX idx_nome_produto ON PRODUTOS (nome_produto);
-CREATE INDEX idx_codigo_produto ON PRODUTOS (codigo_produto);
-CREATE INDEX idx_sabor_bolo ON PRODUTOS (sabor_bolo);
-CREATE INDEX idx_sabor_recheio ON PRODUTOS (sabor_recheio);
-CREATE INDEX idx_decoracao_bolo ON PRODUTOS (decoracao_bolo);
 
-CREATE INDEX idx_id_produto_ficha ON FICHA_TECNICA (id_produto);
-CREATE INDEX idx_nome_ficha ON FICHA_TECNICA (nome);
-CREATE INDEX idx_sabor_bolo_ficha ON FICHA_TECNICA (sabor_bolo);
-CREATE INDEX idx_sabor_recheio_ficha ON FICHA_TECNICA (sabor_recheio);
-CREATE INDEX idx_decoracao_bolo_ficha ON FICHA_TECNICA (decoracao_bolo);
-CREATE INDEX idx_tempo_preparo_ficha ON FICHA_TECNICA (tempo_preparo);
-
+-- Índices para a tabela de OP
 CREATE INDEX idx_data_inicio_op ON OP (data_inicio);
-CREATE INDEX idx_data_conclusao_op ON OP (data_conclusao);
 CREATE INDEX idx_status_op ON OP (status);
-CREATE INDEX idx_quantidade_a_produzir_op ON OP (quantidade_a_produzir);
-CREATE INDEX idx_id_produto_op ON OP (id_produto);
 
+-- Índices para a tabela de serviço
 CREATE INDEX idx_funcao_servico ON SERVICO (funcao);
-CREATE INDEX idx_horas_trabalhadas_servico ON SERVICO (horas_trabalhadas);
-CREATE INDEX idx_custo_servico ON SERVICO (custo_servico);
-
-CREATE INDEX idx_custo_materiais ON CUSTOS (custo_materiais);
-CREATE INDEX idx_custo_mao_de_obra_direta ON CUSTOS (custo_mao_de_obra_direta);
-CREATE INDEX idx_custos_gerais_fabricacao ON CUSTOS (custos_gerais_fabricacao);
-CREATE INDEX idx_despesas_gerais_administrativas ON CUSTOS (despesas_gerais_administrativas);
-
-
+CREATE INDEX idx_custo_servico_hora ON SERVICO (custo_servico_hora);

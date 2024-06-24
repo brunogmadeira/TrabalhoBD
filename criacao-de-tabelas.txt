@@ -1,38 +1,55 @@
-CREATE TABLE PRODUTOS (
-    id_produto SERIAL PRIMARY KEY,
-    nome_produto VARCHAR(100) NOT NULL,
-    codigo_produto VARCHAR(50) UNIQUE NOT NULL,
-	sabor_bolo INT NOT NULL, -- 1- Tradicional / 2- Chocolate 
-	sabor_recheio INT NOT NULL, -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
-	decoracao_bolo INT NOT NULL, -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
-    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-/*tabela de produtos cadastrados*/
+/*tabela de massas*/
 
-CREATE TABLE FICHA_TECNICA (
-    id_ficha SERIAL PRIMARY KEY,
-    id_produto INT NOT NULL REFERENCES PRODUTOS(id_produto),
-    nome VARCHAR(100) NOT NULL,
-    descricao TEXT,
-    manteiga_gramas INT NOT NULL,
-    trigo_gramas INT NOT NULL,
-    acucar_gramas INT NOT NULL,
-    ovos_unidades INT NOT NULL,
-    leite_ml INT NOT NULL,
-    fermento_po_gramas INT NOT NULL,
-    baunilha_ml INT NOT NULL,
-    sal_gramas INT NOT NULL,
-    cobertura_gramas INT NOT NULL,
-    recheio_gramas INT NOT NULL,
-    sabor_bolo INT NOT NULL, -- 1- Tradicional / 2- Chocolate 
-    sabor_recheio INT NOT NULL, -- 1- Brigadeiro / 2- Brigadeiro Branco / 3- Dois Amores / 4-Ninho com nutella / 5- Quatro Leites / 6- Sensação / 5- Cocada / 6- Caramelo Salgado 
-    decoracao_bolo INT NOT NULL, -- 1- Bento (frase personalizada) / 2- Desenho animado / 3- Time de futebol / 4- Cor lisa, 5- Mandar referencia
-    tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
-    modo_preparo TEXT NOT NULL,
-    custo_unitario DECIMAL(10, 2) NOT NULL
+create table massas (
+  id_massa SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_massa DECIMAL (10,2) not null
+);
+
+/*tabela de recheios*/
+
+create table recheios (
+  id_recheio SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_recheio DECIMAL (10,2) not null
+);
+
+/*tabela de decoracoes*/
+
+create table decoracoes (
+  id_decoracao SERIAL primary key, 
+  descricao VARCHAR(50) not NULL,
+  ingredientes text not null, 
+  valor_decoracao DECIMAL (10,2) not null
 );
 
 /*tabela de ficha tecnica*/
+
+CREATE TABLE FICHA_TECNICA (
+    id_ficha SERIAL PRIMARY KEY,
+    id_massa INT NOT NULL REFERENCES massas(id_massa), 
+	id_recheio INT NOT NULL REFERENCES recheios(id_recheio),
+	id_decoracao INT NOT NULL REFERENCES decoracoes(id_decoracao),
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    tempo_preparo INTERVAL NOT NULL, -- Tempo de preparo total
+    servicos_utilizados VARCHAR(50) NOT NULL,
+    custo_total DECIMAL(10, 2) NOT null
+);
+
+/*tabela de produtos cadastrados*/
+
+CREATE TABLE PRODUTOS (
+    id_produto SERIAL PRIMARY KEY,
+	id_ficha INT NOT NULL REFERENCES FICHA_TECNICA(id_ficha),
+    nome_produto VARCHAR(100) NOT NULL,
+    descricao text not null,
+    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+/*tabela de op*/
 
 CREATE TABLE OP (
     id_op SERIAL PRIMARY KEY,
@@ -44,25 +61,13 @@ CREATE TABLE OP (
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-/*tabela de op*/
 
+/* tabela de servico*/
 
 CREATE TABLE SERVICO (
     id_servico SERIAL PRIMARY KEY,
     funcao VARCHAR(100) NOT NULL,
-    horas_trabalhadas DECIMAL(10, 2) NOT NULL,
-    custo_servico DECIMAL(10, 2) NOT NULL,
-    data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-/* tabela de servico*/
-
-CREATE TABLE CUSTOS (
-    id SERIAL PRIMARY KEY,
-    custo_materiais DECIMAL(10, 2) NOT NULL,
-    custo_mao_de_obra_direta DECIMAL(10, 2) NOT NULL,
-    custos_gerais_fabricacao DECIMAL(10, 2) NOT NULL,
-    despesas_gerais_administrativas DECIMAL(10, 2) NOT NULL,
+    custo_servico_hora DECIMAL(10, 2) NOT NULL,
     data_de_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_de_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
