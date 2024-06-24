@@ -1,0 +1,7 @@
+#Justificativa para quebra de normalização
+
+todas as tabelas foram normalizadas para evitar redundâncias e dependências não triviais, 
+garantindo a integridade dos dados. A única potencial quebra de normalização poderia ser na tabela OP, 
+onde status é armazenado diretamente em vez de uma tabela de status separada. Isso foi feito para simplificar 
+as consultas e atualizações, uma vez que os valores possíveis de status são poucos e bem definidos, reduzindo 
+a complexidade sem comprometer a integridade dos dados.
